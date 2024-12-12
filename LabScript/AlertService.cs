@@ -3,18 +3,31 @@ using Microsoft.JSInterop;
 
 namespace LabScript
 {
-	public class AlertService : IAsyncDisposable
+	public class AlertService : IAsyncDisposable, IAlertService
 	{
 		readonly Lazy<Task<IJSObjectReference>> ijsObjectReference;
 
 		public AlertService(IJSRuntime ijsRuntime)
 		{
-			this.ijsObjectReference = new Lazy<Task<IJSObjectReference>>();
+			this.ijsObjectReference = new Lazy<Task<IJSObjectReference>>(() =>
+			ijsRuntime.InvokeAsync<IJSObjectReference>("import",
+			"/Home.js").AsTask());
 		}
 
-		public ValueTask DisposeAsync()
+		public async ValueTask DisposeAsync()
 		{
-			throw new NotImplementedException();
+			if (this.ijsObjectReference.IsValueCreated)
+			{
+				IJSObjectReference moduleJs = await ijsObjectReference.Value;
+				await moduleJs.DisposeAsync();
+			}
+		}
+
+		public async Task CallJsAlertFunction()
+		{
+			var jsModule = await ijsObjectReference.Value;
+
+			await jsModule.InvokeVoidAsync("jsFuncion");
 		}
 	}
 }
