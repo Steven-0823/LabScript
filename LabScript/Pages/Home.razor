@@ -11,7 +11,7 @@ Welcome to your new app.
 
 <script>
 	function jsFuncion(){
-	alert ("Hola mundo");
+	alert ("Prueba");
 	}
 
 </script>
@@ -23,7 +23,7 @@ Welcome to your new app.
 	{
 		if (firstRender)
 		{
-			await ijsRuntime.InvokeVoidAsync("jsFunction", null);
+			await ijsRuntime.InvokeVoidAsync("alert", "Prueba");
 		}
 	}
 }
